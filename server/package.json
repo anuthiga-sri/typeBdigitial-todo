@@ -12,7 +12,10 @@
   },
   "dependencies": {
     "@typebdigital/shared": "*",
-    "express": "^5.2.1"
+    "dotenv": "^17.4.0",
+    "express": "^5.2.1",
+    "mongoose": "^9.4.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

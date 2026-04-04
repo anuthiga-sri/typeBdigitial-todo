@@ -11,7 +11,13 @@ Monorepo for the todo application: a **React** front end (Vite), a **Node** API 
 │   ├── index.html
 │   └── vite.config.ts
 ├── server/                 # Express API (TypeScript)
-│   ├── src/                # Server entry and routes
+│   ├── src/
+│   │   ├── index.ts        # Bootstrap (DB, listen)
+│   │   ├── app.ts          # Express app composition
+│   │   ├── database/       # MongoDB connection
+│   │   ├── common/         # Cross-cutting (middleware, HTTP errors)
+│   │   ├── modules/        # Feature modules (e.g. `todos/`)
+│   │   └── types/          # Ambient types (Express augmentation)
 │   └── dist/               # Compiled output (`npm run build` in server)
 ├── packages/
 │   └── shared/             # `@typebdigital/shared` — shared types & exports
