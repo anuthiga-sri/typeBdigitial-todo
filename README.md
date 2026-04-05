@@ -1,83 +1,68 @@
 # typebdigital-todo
 
-Monorepo for the todo application: a **React** front end (Vite), a **Node** API (Express), and **shared TypeScript** types used by both.
+Monorepo: React (Vite) client, Express API, shared TypeScript package.
 
-## Folder structure
+---
 
-```text
-.
-├── client/                 # React app (Vite + TypeScript)
-│   ├── src/                # Components, entry (`main.tsx`), styles
-│   ├── index.html
-│   └── vite.config.ts
-├── server/                 # Express API (TypeScript)
-│   ├── src/                # Server entry and routes
-│   └── dist/               # Compiled output (`npm run build` in server)
-├── packages/
-│   └── shared/             # `@typebdigital/shared` — shared types & exports
-│       └── src/
-│           └── index.ts
-├── package.json            # npm workspaces + root scripts
-└── package-lock.json
-```
+## Run the application
 
-- **`client/`** — Browser UI. Run the Vite dev server for local development with hot reload.
-- **`server/`** — HTTP API. Listens on port **3000** by default (override with `PORT`).
-- **`packages/shared/`** — Types (and optional shared runtime code) imported by `client` and `server` via the workspace package `@typebdigital/shared`.
+### Prerequisites (system-level)
 
-Dependencies are installed **once** at the repository root; npm workspaces link `client`, `server`, and `packages/shared`.
+- **Node.js** (LTS recommended) and **npm** (v7+ for workspaces)
+- **MongoDB** reachable at the URI you put in `server/.env` (e.g. local `mongod` on the default port)
 
-## Prerequisites
+### Environment
 
-- **Node.js** (LTS recommended). Vite 5 and the current toolchain expect a recent Node release; if `npm run build` fails with engine or native binding errors, upgrade Node and reinstall.
-- **npm** (comes with Node), version 7 or newer for workspaces.
+- Backend only: copy `server/.env.example` to `server/.env` and adjust values if needed (`MONGODB_URI`, `PORT`).
 
-## How to run the app
+### Install dependencies
 
-From the **repository root**:
+- From the **repository root**:
 
-1. **Install dependencies**
+  ```bash
+  npm ci
+  ```
 
-   ```bash
-   npm install
-   ```
+  (`npm install` also works; `npm ci` is for clean installs from the lockfile.)
 
-2. **Development**
+### Start
 
-   - **Front end only** (Vite, default URL shown in the terminal, often `http://localhost:5173`):
+- **Terminal 1 — API**
 
-     ```bash
-     npm run dev
-     ```
+  ```bash
+  npm run dev:server
+  ```
 
-     Same as `npm run dev:client`.
+- **Terminal 2 — client**
 
-   - **API only** (Express on `http://localhost:3000`):
+  ```bash
+  npm run dev:client
+  ```
 
-     ```bash
-     npm run dev:server
-     ```
+### Access
 
-   For full-stack work, run **two terminals**: one for `npm run dev:client` and one for `npm run dev:server`.
+- **UI:** open the URL Vite prints (usually **http://localhost:5173**). It proxies **`/api`** to the server (**http://localhost:3000** by default).
 
-3. **Production build**
+---
 
-   ```bash
-   npm run build
-   ```
+## Contribute / extend the codebase
 
-   Builds the client (TypeScript check + Vite bundle) and compiles the server to `server/dist/`.
+### Client (`client/src/`)
 
-4. **Run the compiled API**
+- **`features/<name>/`** — feature-specific UI, API calls, hooks, and small domain helpers (e.g. `features/todos/`).
+- **`shared/`** — reusable UI primitives (`components/ui`) and utilities (`lib`) used across features.
+- **`app/`** — app shell, providers, routing entry wiring.
 
-   After a successful `npm run build`:
+Add a new product area by adding a **`features/<new-feature>/`** folder and keeping feature code inside it; lift only truly shared pieces to **`shared/`**.
 
-   ```bash
-   npm start
-   ```
+### Server (`server/src/`)
 
-   This runs `node` on the server’s `dist/` output. Set `PORT` if you need a different port:
+- **`modules/<name>/`** — one folder per domain (e.g. `modules/todos/`): routes, DTOs, model, serializer, and **`services/`** (one file per operation or small group).
+- **`common/`** — shared middleware, errors, cross-cutting pieces.
+- **`database/`** — DB connection.
 
-   ```bash
-   PORT=4000 npm start
-   ```
+Add a new API area with a new **`modules/<feature>/`** and register routes in the app bootstrap.
+
+### Shared types
+
+- **`packages/shared/`** — types and exports imported as **`@typebdigital/shared`** from client and server. Extend here when both sides need the same contract.

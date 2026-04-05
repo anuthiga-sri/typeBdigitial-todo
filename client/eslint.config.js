@@ -6,7 +6,7 @@ import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores(["dist", "**/*.cjs", "postcss.config.js"]),
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -26,10 +26,7 @@ export default defineConfig([
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+      "react-refresh/only-export-components": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { varsIgnorePattern: "^[A-Z_]" },
